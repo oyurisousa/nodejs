@@ -16,7 +16,7 @@ const server = http.createServer((req,res)=>{
         res.writeHead(302,{
             Location : '/'
         })
-        fs.appendFile('arquivo.txt',`${name}\n`,(err)=>{})
+        fs.writeFile('arquivo.txt',`${name}\n`,(err)=>{})
         res.end()
     }
 })
