@@ -1,5 +1,5 @@
 import inquirer from 'inquirer'
-
+import chalk from 'chalk'
 operation()
 
 function operation(){
@@ -16,6 +16,13 @@ function operation(){
         ]
     }]).then((answer)=>{
       const action = answer['action']
-      console.log(action)  
+      if(action === 'Criar conta'){
+        create_account()
+      }
     }).catch((err)=>{console.log(err)})
+}
+
+function create_account(){
+    console.log(chalk.bgGreen.black("Parabéns por escolher nosso banco!"))
+    console.log(chalk.green("defina as opções da sua conta a seguir:"))
 }
