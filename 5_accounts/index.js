@@ -25,7 +25,7 @@ function operation(){
       }else if(action === "Consultar saldo"){
         consult_amount()
       }else if(action === "Sacar"){
-        
+        withdraw()
       }else if(action === "Sair"){
         console.log(chalk.bgBlue.black("Obrigado por usar o Accounts!"))
         process.exit()
@@ -139,4 +139,48 @@ function consult_amount(){
     return operation()
   }).catch(err=>{console.log(err)})
   
+}
+
+function withdraw(account_name,amount){
+   inquirer.prompt([
+    {
+      name: "account_name",
+      message: "Qual o nome da sua conta?"      
+    }
+  ])
+  .then((answer)=>{
+    const account_name = answer['account_name']
+    if(!check_account(account_name)){
+      return withdraw()
+    }
+
+    inquirer.prompt([
+      {
+        name : "amount",
+        message : "Valor do saque:" 
+      }
+    ]).then((answer)=>{
+      const amount = answer['amount']
+      //add amount
+      subtract_amount(account_name,amount)
+      
+    }).catch(err => console.log(err))
+  })
+  .catch((err)=>{console.log(err)})
+}
+
+function subtract_amount(account_name,amount){
+  const account = get_account(account_name)
+  if(!amount){
+    console.log(chalk.bgRed.black("Ocorreu um erro!"))
+    return deposit()
+  }else if(account.balance < amount){
+    console.log(chalk.bgRed.black("Saldo insuficiente"))
+    return operation()
+  }
+  account.balance = parseFloat(account.balance) - parseFloat(amount)
+
+  fs.writeFileSync(`accounts/${account_name}.json`, JSON.stringify(account),err=>console.log(err))
+  console.log(chalk.green(`Saque de R$${amount} foi realizado com sucesso!`))
+  return operation()
 }
