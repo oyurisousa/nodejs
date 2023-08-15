@@ -1,0 +1,7 @@
+<h1>livros cadastrados</h1>
+{{#each books}}
+    <div style="border-bottom: 1px solid black;">
+        <h3><span>#{{this.id}}</span> <a href="/book/{{this.id}}">{{this.title}}</a></h2>
+               
+    </div>
+{{/each}}
