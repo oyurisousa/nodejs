@@ -4,6 +4,8 @@ const exphbs = require("express-handlebars")
 const app = express()
 const conn = require("./db/conn")
 
+const tasksRoutes = require("./routers/tasksRoutes")
+
 const Task = require("./models/Task")
 
 app.engine('handlebars', exphbs.engine())
@@ -15,6 +17,13 @@ app.use(express.urlencoded({
 app.use(express.json())
 app.use(express.static('public'))
 
+
+
+app.use('/tasks', tasksRoutes)
+
+app.get("/", (req,res)=>{
+    res.render("home")
+})
 
 conn
     .sync()
