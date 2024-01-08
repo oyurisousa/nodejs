@@ -1,10 +1,7 @@
 const Task  = require("../models/Task")
 
-
-
-
 module.exports = class TaskController{
-    static createTask(req,res){
+    static viewAddTask(req,res){
         res.render('tasks/create')
     }
 
@@ -22,9 +19,44 @@ module.exports = class TaskController{
         res.redirect('/tasks')
     }
 
-    static showTasks(req,res){
-        const tasks = Task.findOne({raw: true, where: {id: 1}}) 
-        console.log(tasks)
+    static async showTasks(req,res){
+        const tasks = await Task.findAll({raw: true, order: [['done', 'ASC'],['updatedAt', 'DESC']]}) 
+        
         res.render('tasks/all',{tasks})
+    }
+
+    static async viewUpdateTask(req,res){
+        const id = req.params.id
+        const task = await Task.findOne({raw:true,where: {id}})
+        console.log(task)
+        res.render(`tasks/update`, {task})
+    }
+
+    static async updateTask(req,res){
+        const id = req.params.id
+        const task = {
+            title: req.body.title,
+            description: req.body.description
+        }
+        await Task.update(task,{where: {id}})
+        res.redirect('/tasks')
+    }
+
+    static async updateStatusTask(req,res){
+        const id  = req.params.id
+        
+        const task = {
+            done: req.body.done == "0" ? true : false
+        }
+        await Task.update(task, {where: {id}})
+        
+        res.redirect("/tasks")
+        
+    }
+    static async removeTask(req,res){
+        const id = req.params.id
+        const task = await Task.findOne({raw: true, where:{id:id}}) 
+        await Task.destroy({where: {id}})
+        res.redirect("/tasks")
     }
 } 
