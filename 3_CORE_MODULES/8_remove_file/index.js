@@ -1,5 +1,4 @@
 const fs = require("fs")
-//const path = require("path")
 
 
 fs.unlink("teste.txt",(err)=>{
@@ -9,3 +8,4 @@ fs.unlink("teste.txt",(err)=>{
     }
     console.log("remove file with sucess!")
 })
+s

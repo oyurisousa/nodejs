@@ -162,6 +162,14 @@
    border-color: #fff;
    margin: 0 0.5em;
  }
+
+ .dashboard a{
+  color: #f6982d;
+ }
+
+ .dashboard p{
+  color: #c5daf0;
+ }
  
  /* CREATE / EDIT FORM */
  .tought-form-container a {
@@ -221,6 +229,9 @@
  
  .home-header input::placeholder {
    color: #fff;
+ }
+ .home-header input[type=text] {
+  outline: none;
  }
  
  .order-container {
