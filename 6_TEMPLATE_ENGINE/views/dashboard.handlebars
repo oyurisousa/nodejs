@@ -1,0 +1,16 @@
+
+<h1>Dashboard</h1>
+<h2>Languages</h2>
+<ul>
+    {{#each itens}}
+        <li>{{this}}</li>
+    {{/each}}
+</ul>
+
+<h2>Users</h2>
+
+
+{{#with users}}
+   <span>Name:{{name}}</span></br>
+   <span>Age:{{age}}</span> 
+{{/with}}
