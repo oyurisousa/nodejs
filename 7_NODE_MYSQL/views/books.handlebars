@@ -1,0 +1,14 @@
+<h2>LIST BOOKS</h2>
+
+<div class="books-contain">
+    {{#each books}}
+        <div class="book">
+            <h5>{{this.id}}-{{this.title}}-{{this.page_quant}}</h4>
+            <a href="/books/update/{{this.id}}">Edit</a>
+            <form action="/books/delete/{{this.id}}" method="post"><input type="submit" value="DELETE"></form>
+        </div>
+    {{/each}}
+    <a href="/">Register new book!</a>
+</div>
+
+
