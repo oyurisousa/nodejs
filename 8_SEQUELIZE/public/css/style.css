@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1,h2,h5{
+    width: fit-content;
+    margin: 0 auto;
+}
+
+
+
+
+form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    margin: 0 auto;
+}
+input#title,input#page_quant{
+    width: 400px;
+    height: 40px;
+}
+
+input[type=submit]{
+    width: 400px;
+    height: 30px;
+    background-color: rgb(96, 233, 233);
+    color: black;
+    border: none;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+
+input[type=submit]:hover{
+    background-color: rgb(66, 199, 199);
+    cursor: pointer;
+    transition: 0.8s all r;
+}

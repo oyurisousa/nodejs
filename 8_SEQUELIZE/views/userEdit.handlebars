@@ -1,0 +1,41 @@
+<h2>Edit this user</h2>
+<form action="/users/edit/{{user.id}}" method="POST">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" value="{{user.name}}">
+    <label for="occupation">Occupation</label>
+    <input type="text" id="occupation" name="occupation" value="{{user.occupation}}">
+    <input type="checkbox" name="newsletter" id="newsletter" {{user.newsletter}}>
+    <label for="newsletter">Do you want to receive promotions?</label>
+    <input type="submit" value="Submit">
+</form>
+
+<div class="address-contain">
+    <h2>Addresses:</h2>
+    <form action="/address/create" method="post">
+        <input type="hidden" name="UserId" value="{{user.id}}">
+        <div class="form-control">
+            <label for="street">Street</label>
+            <input type="text" name="street"required>
+        </div>
+        <div class="form-control">
+            <label for="number">Number</label>
+            <input type="text" name="number"required>
+        </div>
+        <div class="form-control">
+            <label for="city">City</label>
+            <input type="text" name="city" required>
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+
+    <div class="address-list">
+        <h2>List of address</h2>
+        {{#each user.Addresses}} <!--user.<name of table on database>-->
+            <address>#{{this.id}} - {{this.street}} - {{this.number}} - {{this.city}}</address>
+            <form action="/address/remove/{{this.id}}" method="post">
+                <input type="hidden" name="UserId" value="{{this.UserId}}">
+                <input type="submit" value="Delete">
+            </form>
+        {{/each}}
+    </div>
+</div>

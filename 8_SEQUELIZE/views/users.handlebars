@@ -1,0 +1,19 @@
+<h2>List Users</h2>
+<ul>
+    {{#each users}}
+        <li>
+            <p><span>Name:</span> {{this.name}}</p>
+            <p><span>Occupation:</span> {{this.occupation}}</p>
+            {{#if this.newsletter}}
+                <p><span>Newsletter:</span> Sim</p>
+            {{else}}
+                <p><span>Newsletter: </span>Não</p>
+            {{/if}}
+            <a href="/users/edit/{{this.id}}">Edit</a>
+            <form action="/users/remove/{{this.id}}" method="post">
+                <input type="submit" name="remove" id="remove" value="Unsubscribe">
+            </form>
+            <br>
+        </li>
+    {{/each}}
+</ul>
