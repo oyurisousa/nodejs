@@ -33,6 +33,10 @@ class Product{
         const product = await collection.findOne({_id: new ObjectId(id)})
         return product
     }
+
+    static async delete(id){
+        await collection.deleteOne({_id: new ObjectId(id)})
+    }
     
 }
 
