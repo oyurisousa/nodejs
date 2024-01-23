@@ -4,7 +4,6 @@ const Product = require('../models/Product')
 module.exports = class ProductController{
     static async showProducts(req,res){
         const products = await Product.getProducts()
-        console.log(products)
         res.render("products/all",{products})
     }
 
@@ -21,7 +20,6 @@ module.exports = class ProductController{
     static async singleProduct(req,res){
         const id = req.params.id
         const product = await Product.getSingleProduct(id)
-        console.log(product)
         res.render("products/product", {product})
     }
 
@@ -31,5 +29,24 @@ module.exports = class ProductController{
         res.redirect("/products")
     }
 
+    static async viewEditProduct(req,res){
+        const id = req.params.id
+        const product = await Product.getSingleProduct(id)
+        console.log(product)
+        res.render("products/edit",{product})
+    }
+
+    static async updateProdct(req,res){
+        const id = req.body.id
+        const name = req.body.name
+        const image = req.body.image
+        const price = req.body.price
+        const description =  req.body.description
+        
+        const product = new Product(name, image, price, description)
+
+        await product.update(id)
+        res.redirect("/products")
+    }
     
 }

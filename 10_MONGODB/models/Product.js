@@ -37,6 +37,18 @@ class Product{
     static async delete(id){
         await collection.deleteOne({_id: new ObjectId(id)})
     }
+
+    async update(id){
+        
+        await collection
+        .updateOne({
+            _id: new ObjectId(id)
+        },
+        {
+            $set: this
+        })
+        
+    }
     
 }
 
