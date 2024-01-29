@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 const {Schema} = require("mongoose")
 
 const User = mongoose.model(
-    'User',
+    'Users',
     new Schema({
             name: {
                 type: String,
@@ -25,7 +25,7 @@ const User = mongoose.model(
                 required: true
             },
         },
-        {timestamps: true}
+        {timestamps: true},
     )
 )
 
