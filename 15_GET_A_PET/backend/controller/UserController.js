@@ -1,6 +1,10 @@
 const jwt = require("jsonwebtoken")
+
 const createUserToken = require("../helpers/create-user-token")
 const getToken = require("../helpers/get-token")
+const validateId = require("../helpers/validate-id")
+const getUserByToken = require("../helpers/get-user-by-token")
+
 const User = require("../models/User")
 const bcrypt = require("bcrypt")
 const { default: mongoose } = require("mongoose")
@@ -128,11 +132,66 @@ module.exports = class UserController{
         
         res.status(200).json({user})
     }
-
+    
     static async editUser(req,res){
-        res.status(200).json({
-            message: "update sucessfully!"
-        })
-        return
+        const id = req.params.id
+        const {name, email, phone, password, confirmpassword} = req.body
+        let image = ''
+        
+        let user
+        //validate id
+        if(validateId(res,id)){
+            const token = getToken(req)
+            user = await getUserByToken(token)
+        }else{
+            return res.status(200).json({
+                message: "id invalid!"
+            })
+        }
+        
+        if(!name){
+            res.status(422).json({message: "the name field is required"})
+            return
+        }
+        user.name = name
+        if(!email){
+            res.status(422).json({message: "the email field is required"})
+            return
+        }
+        const userExists = await User.findOne({email: email})
+        
+        if(user.email !== userExists.email &&  userExists){
+            res.status(422).json({message: "please, user other email"})
+            return
+        }
+        user.email = email
+
+        if(!phone){
+            res.status(422).json({message: "the phone field is required"})
+            return
+        }
+        user.phone = phone
+        if(password !== confirmpassword){
+            res.status(422).json({message: "passwords don't match!"})
+            return
+        }else if(password == confirmpassword && password != null){
+            const salt = await bcrypt.genSalt(12)
+            const passwordHash = await bcrypt.hash(password, salt)
+            user.password = passwordHash
+        }
+        try {
+            const updateUser = await User.findOneAndUpdate(
+                {_id: user.id},
+                {$set: user},
+                {new: true},
+                res.status(200).json({message: "User update sucessfully!"})
+            )
+        } catch (error) {
+            res.status(500).json({
+                message: error
+            })
+            return
+        }
+        
     }
 }
