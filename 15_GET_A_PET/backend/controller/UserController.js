@@ -136,8 +136,6 @@ module.exports = class UserController{
     static async editUser(req,res){
         const id = req.params.id
         const {name, email, phone, password, confirmpassword} = req.body
-        let image = ''
-        
         let user
         //validate id
         if(validateId(res,id)){
@@ -149,6 +147,10 @@ module.exports = class UserController{
             })
         }
         
+         
+        if(req.file){
+            user.image = req.file.filename
+        }
         if(!name){
             res.status(422).json({message: "the name field is required"})
             return
