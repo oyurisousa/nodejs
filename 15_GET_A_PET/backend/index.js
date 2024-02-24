@@ -3,6 +3,7 @@ const cors = require("cors")
 const conn = require("./db/conn")
 const app = express()
 const UserRoutes = require("./routes/UserRoutes")
+const PetRoutes = require("./routes/PetsRoutes")
 
 //config Json response
 app.use(express.json())
@@ -18,4 +19,5 @@ app.use(express.static('public'))
 
 //routes
 app.use( "/users",UserRoutes)
+app.use( "/pets",PetRoutes)
 app.listen(5000)
