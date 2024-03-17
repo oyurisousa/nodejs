@@ -12,10 +12,10 @@ import useFlashMessage from "../../../hooks/useFlashMessage";
 function MyPets() {
 	const [pets, setPets] = useState([]);
 	const [token] = useState(localStorage.getItem("token") || "");
+	const { setFlashMessage } = useFlashMessage();
 	// const [setFlashMessage] = useFlashMessage();
 
 	useEffect(() => {
-		console.log("Fetching pets...");
 		api
 			.get("/pets/mypets", {
 				headers: {
@@ -30,6 +30,29 @@ function MyPets() {
 				console.error("Error fetching pets:", err);
 			});
 	}, [token]);
+
+	async function removePet(id) {
+		let msgType = "success";
+		const data = await api
+			.delete(`/pets/${id}`, {
+				headers: {
+					Authorization: `Bearer ${JSON.parse(token)}`,
+				},
+			})
+			.then((response) => {
+				pets.forEach((pet) => {
+					console.log(pet);
+				});
+				const updatedPets = pets.filter((pet) => pet._id !== id);
+				setPets(updatedPets);
+				return response.data;
+			})
+			.catch((err) => {
+				msgType = "error";
+				return err.response.data;
+			});
+		setFlashMessage(data.message, msgType);
+	}
 	return (
 		<section>
 			<div className={styles.petslist_header}>
@@ -55,7 +78,13 @@ function MyPets() {
 											</button>
 										)}
 										<Link to={`/pet/edit/${pet.id}`}>Editar</Link>
-										<button>Excluir</button>
+										<button
+											onClick={() => {
+												removePet(pet._id);
+											}}
+										>
+											Excluir
+										</button>
 									</>
 								) : (
 									<p>Pet já adotado</p>
