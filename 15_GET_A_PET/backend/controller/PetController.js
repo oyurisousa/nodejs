@@ -131,11 +131,9 @@ module.exports = class PetController {
 			const token = getToken(req);
 			const user = await getUserByToken(token);
 			if (pet.user._id.toString() != user._id.toString()) {
-				res
-					.status(422)
-					.json({
-						message: "you can only remove pets that you have regitered!",
-					});
+				res.status(422).json({
+					message: "you can only remove pets that you have regitered!",
+				});
 				return;
 			}
 			await Pet.findByIdAndDelete(id);
@@ -188,16 +186,13 @@ module.exports = class PetController {
 			return;
 		}
 		pet.available = available;
-		if (images.length === 0) {
-			res.status(422).json({ message: "the images field is required!" });
-			return;
+		if (images) {
+			pet.images = [];
+			images.map((image) => {
+				pet.images.push(image.filename);
+			});
 		}
 
-		images = images.map((image) => {
-			return image.filename;
-		});
-
-		pet.images = images;
 		await Pet.findByIdAndUpdate(id, pet);
 		res.status(200).json({ message: "Pet Update Sucessfully!" });
 	}
@@ -267,12 +262,10 @@ module.exports = class PetController {
 		const token = getToken(req);
 		const user = await getUserByToken(token);
 		if (!pet.user._id.equals(user._id)) {
-			res
-				.status(422)
-				.json({
-					message:
-						"you dont conclude a schedule of a pet that you dont registered!",
-				});
+			res.status(422).json({
+				message:
+					"you dont conclude a schedule of a pet that you dont registered!",
+			});
 		}
 		pet.available = false;
 
