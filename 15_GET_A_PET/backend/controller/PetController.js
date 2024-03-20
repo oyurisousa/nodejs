@@ -74,7 +74,7 @@ module.exports = class PetController {
 
 	static async getAll(req, res) {
 		const pets = await Pet.find().sort("-createdAt");
-		res.status(200).json(pets);
+		res.status(200).json({ pets });
 	}
 
 	static async getAllUserPets(req, res) {
@@ -146,55 +146,135 @@ module.exports = class PetController {
 	}
 
 	static async updatePetById(req, res) {
-		const { id } = req.params;
-		const { name, age, weight, color, available } = req.body;
-		var images = req.files;
-		var pet;
-		if (ObjectId.isValid(id)) {
-			pet = await Pet.findOne({ _id: id });
-			if (!pet) {
-				res.status(404).json({
-					message: "pet not found",
-				});
-				return;
-			}
-		} else {
-			res.status(422).json({ message: "invalid id" });
+		const id = req.params.id;
+		const name = req.body.name;
+		const age = req.body.age;
+		const description = req.body.description;
+		const weight = req.body.weight;
+		const color = req.body.color;
+		const images = req.files;
+		const available = req.body.available;
+
+		const updateData = {};
+
+		// check if pet exists
+		const pet = await Pet.findOne({ _id: id });
+
+		if (!pet) {
+			res.status(404).json({ message: "Pet não encontrado!" });
+			return;
 		}
+
+		// check if user registered this pet
+		const token = getToken(req);
+		const user = await getUserByToken(token);
+
+		if (pet.user._id.toString() != user._id.toString()) {
+			res.status(404).json({
+				message:
+					"Houve um problema em processar sua solicitação, tente novamente mais tarde!",
+			});
+			return;
+		}
+
+		// validations
 		if (!name) {
-			res.status(422).json({ message: "the name field is required!" });
+			res.status(422).json({ message: "O nome é obrigatório!" });
 			return;
+		} else {
+			updateData.name = name;
 		}
-		pet.name = name;
+
 		if (!age) {
-			res.status(422).json({ message: "the age field is required!" });
+			res.status(422).json({ message: "A idade é obrigatória!" });
 			return;
+		} else {
+			updateData.age = age;
 		}
-		pet.age = age;
+
 		if (!weight) {
-			res.status(422).json({ message: "the weight field is required!" });
+			res.status(422).json({ message: "O peso é obrigatório!" });
 			return;
+		} else {
+			updateData.weight = weight;
 		}
-		pet.weight = weight;
+
 		if (!color) {
-			res.status(422).json({ message: "the color field is required!" });
+			res.status(422).json({ message: "A cor é obrigatória!" });
 			return;
+		} else {
+			updateData.color = color;
 		}
-		pet.color = color;
-		if (!available) {
-			res.status(422).json({ message: "the available field is required!" });
-			return;
-		}
-		pet.available = available;
-		if (images) {
-			pet.images = [];
+
+		if (images.length > 0) {
+			updateData.images = [];
 			images.map((image) => {
-				pet.images.push(image.filename);
+				updateData.images.push(image.filename);
 			});
 		}
 
-		await Pet.findByIdAndUpdate(id, pet);
-		res.status(200).json({ message: "Pet Update Sucessfully!" });
+		if (!available) {
+			res.status(422).json({ message: "O status é obrigatório!" });
+			return;
+		} else {
+			updateData.available = available;
+		}
+
+		updateData.description = description;
+		console.log(req.body);
+		await Pet.findByIdAndUpdate(id, updateData);
+
+		res.status(200).json({ pet: pet, message: "Pet atualizado com sucesso!" });
+		// const { id } = req.params;
+		// const { name, age, weight, color, available } = req.body;
+		// var images = req.files;
+		// var pet;
+		// if (ObjectId.isValid(id)) {
+		// 	pet = await Pet.findOne({ _id: id });
+		// 	if (!pet) {
+		// 		res.status(404).json({
+		// 			message: "pet not found",
+		// 		});
+		// 		return;
+		// 	}
+		// } else {
+		// 	res.status(422).json({ message: "invalid id" });
+		// }
+		// console.log(pet);
+		// if (!name) {
+		// 	res.status(422).json({ message: "the name field is required!" });
+		// 	return;
+		// }
+		// pet.name = name;
+		// if (!age) {
+		// 	res.status(422).json({ message: "the age field is required!" });
+		// 	return;
+		// }
+		// pet.age = age;
+		// if (!weight) {
+		// 	res.status(422).json({ message: "the weight field is required!" });
+		// 	return;
+		// }
+		// pet.weight = weight;
+		// if (!color) {
+		// 	res.status(422).json({ message: "the color field is required!" });
+		// 	return;
+		// }
+		// pet.color = color;
+		// if (!available) {
+		// 	res.status(422).json({ message: "the available field is required!" });
+		// 	return;
+		// }
+		// pet.available = available;
+		// if (images.length > 0) {
+		// 	pet.images = [];
+		// 	images.map((image) => {
+		// 		pet.images.push(image.filename);
+		// 	});
+		// }
+		// console.log(name);
+		// await Pet.findByIdAndUpdate(id, pet);
+		// res.status(200).json({ message: "Pet Update Sucessfully!" });
 	}
 
 	static async schedule(req, res) {
