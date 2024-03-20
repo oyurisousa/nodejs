@@ -23,7 +23,6 @@ function MyPets() {
 				},
 			})
 			.then((response) => {
-				console.log("Pets data:", response.data.myPets);
 				setPets(response.data.myPets);
 			})
 			.catch((err) => {
@@ -77,7 +76,7 @@ function MyPets() {
 												Concluir adoção
 											</button>
 										)}
-										<Link to={`/pet/edit/${pet.id}`}>Editar</Link>
+										<Link to={`/pet/edit/${pet._id}`}>Editar</Link>
 										<button
 											onClick={() => {
 												removePet(pet._id);

@@ -17,7 +17,7 @@ function AddPet() {
 	async function registerPet(pet) {
 		let msgType = "success";
 		const formData = new FormData();
-		console.log("formData: ", formData);
+		console.log();
 		await Object.keys(pet).forEach((key) => {
 			if (key === "images") {
 				for (let i = 0; i < pet[key].length; i++) {
@@ -27,13 +27,14 @@ function AddPet() {
 				formData.append(key, pet[key]);
 			}
 		});
-		console.log(formData);
+
 		const data = await api
 			.post("pets/create", formData, {
 				Authorization: `Bearer ${JSON.parse(token)}`,
 				"Content-Type": "multipart/form-data",
 			})
 			.then((response) => {
+				console.log(response.data);
 				return response.data;
 			})
 			.catch((err) => {
