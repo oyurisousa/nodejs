@@ -8,12 +8,13 @@ import RoundedImage from "../../layouts/RoundedImage";
 import styles from "./Dashboard.module.css";
 
 import useFlashMessage from "../../../hooks/useFlashMessage";
+import { useNavigate } from "react-router-dom";
 
 function MyPets() {
 	const [pets, setPets] = useState([]);
 	const [token] = useState(localStorage.getItem("token") || "");
 	const { setFlashMessage } = useFlashMessage();
-	// const [setFlashMessage] = useFlashMessage();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		api
@@ -52,6 +53,26 @@ function MyPets() {
 			});
 		setFlashMessage(data.message, msgType);
 	}
+
+	async function concludeAdoption(id) {
+		let msgType = "success";
+		const data = await api
+			.patch(`/pets/conclude/${id}`, {
+				headers: {
+					Authorization: `Bearer ${JSON.parse(token)}`,
+				},
+			})
+			.then((response) => {
+				return response.data;
+			})
+			.catch((err) => {
+				msgType = "error";
+				return err.response.data;
+			});
+
+		setFlashMessage(data.message, msgType);
+		navigate("/pet/mypets");
+	}
 	return (
 		<section>
 			<div className={styles.petslist_header}>
@@ -72,7 +93,12 @@ function MyPets() {
 								{pet.available ? (
 									<>
 										{pet.adopter && (
-											<button className={styles.conclude_btn}>
+											<button
+												className={styles.conclude_btn}
+												onClick={() => {
+													concludeAdoption(pet._id);
+												}}
+											>
 												Concluir adoção
 											</button>
 										)}
