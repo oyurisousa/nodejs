@@ -11,7 +11,7 @@ function Navbar() {
 	return (
 		<nav className={styles.navbar}>
 			<div className={styles.navbar_logo}>
-				<img src={Logo}></img>
+				<img src={Logo} />
 			</div>
 			<ul>
 				<li>
@@ -21,6 +21,9 @@ function Navbar() {
 					<>
 						<li>
 							<Link to={"/pet/mypets"}>Meus pets</Link>
+						</li>
+						<li>
+							<Link to={"/pet/myadoptions"}>Minhas Adoções</Link>
 						</li>
 						<li>
 							<Link to={"/user/profile"}>Perfil</Link>
