@@ -225,56 +225,6 @@ module.exports = class PetController {
 		await Pet.findByIdAndUpdate(id, updateData);
 
 		res.status(200).json({ pet: pet, message: "Pet atualizado com sucesso!" });
-		// const { id } = req.params;
-		// const { name, age, weight, color, available } = req.body;
-		// var images = req.files;
-		// var pet;
-		// if (ObjectId.isValid(id)) {
-		// 	pet = await Pet.findOne({ _id: id });
-		// 	if (!pet) {
-		// 		res.status(404).json({
-		// 			message: "pet not found",
-		// 		});
-		// 		return;
-		// 	}
-		// } else {
-		// 	res.status(422).json({ message: "invalid id" });
-		// }
-		// console.log(pet);
-		// if (!name) {
-		// 	res.status(422).json({ message: "the name field is required!" });
-		// 	return;
-		// }
-		// pet.name = name;
-		// if (!age) {
-		// 	res.status(422).json({ message: "the age field is required!" });
-		// 	return;
-		// }
-		// pet.age = age;
-		// if (!weight) {
-		// 	res.status(422).json({ message: "the weight field is required!" });
-		// 	return;
-		// }
-		// pet.weight = weight;
-		// if (!color) {
-		// 	res.status(422).json({ message: "the color field is required!" });
-		// 	return;
-		// }
-		// pet.color = color;
-		// if (!available) {
-		// 	res.status(422).json({ message: "the available field is required!" });
-		// 	return;
-		// }
-		// pet.available = available;
-		// if (images.length > 0) {
-		// 	pet.images = [];
-		// 	images.map((image) => {
-		// 		pet.images.push(image.filename);
-		// 	});
-		// }
-		// console.log(name);
-		// await Pet.findByIdAndUpdate(id, pet);
-		// res.status(200).json({ message: "Pet Update Sucessfully!" });
 	}
 
 	static async schedule(req, res) {
@@ -306,18 +256,18 @@ module.exports = class PetController {
 						.status(422)
 						.json({ message: "you has already schedule this pet!" });
 				}
+			} else {
+				//add user to pet
+				pet.adopter = {
+					_id: new ObjectId(user.id),
+					name: user.name,
+					image: user.image,
+				};
+				await Pet.findByIdAndUpdate(id, pet);
+				res
+					.status(200)
+					.json({ message: "you scheduled your visit sucessfully!" });
 			}
-
-			//add user to pet
-			pet.adopter = {
-				_id: new ObjectId(user.id),
-				name: user.name,
-				image: user.image,
-			};
-			await Pet.findByIdAndUpdate(id, pet);
-			res
-				.status(200)
-				.json({ message: "you scheduled your visit sucessfully!" });
 		} else {
 			res.status(422).json({ message: "invalid id" });
 		}
